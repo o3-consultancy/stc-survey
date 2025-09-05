@@ -79,6 +79,7 @@ async function submit() {
       interest: s.interest, // mapped earlier
       thoughtsOnStc: s.interest === "None" ? s.thoughtsOnStc || null : null,
       answers: {
+        thoughtsOnStc: s.thoughtsOnStc || null,
         interest: s.interest,
         lang: s.lang,
       },
