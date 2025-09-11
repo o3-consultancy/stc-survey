@@ -89,13 +89,13 @@
             />
           </div>
 
-          <!-- Inline validation message -->
+          <!-- Inline validation message (length OR server message) -->
           <p
-            v-if="validationMsg"
+            v-if="activeValidationMsg"
             class="mt-3 text-sm"
-            :class="validationOk ? 'text-green-600' : 'text-red-600'"
+            :class="activeValidationOk ? 'text-green-600' : 'text-red-600'"
           >
-            {{ validationMsg }}
+            {{ activeValidationMsg }}
           </p>
         </div>
 
@@ -139,22 +139,43 @@ const validating = ref(false);
 const validationMsg = ref("");
 const validationOk = ref(false);
 
+// --- Phone length helpers ---
+const phoneDigits = computed(() => (s.phoneNumber || "").replace(/\D/g, ""));
+const isPhoneLongEnough = computed(() => phoneDigits.value.length >= 10);
+
+// Button enabled only when required fields present, not validating, and phone length OK
 const canClickNext = computed(
   () =>
     !!s.name.trim() &&
     !!s.phoneCountryCode &&
     !!s.phoneNumber &&
+    isPhoneLongEnough.value &&
     !validating.value
 );
 
 const nameBorderClass = computed(() =>
   s.name.trim() ? "border-[#600098]" : "border-[#600098]/60"
 );
-const phoneBorderClass = computed(() =>
-  validationMsg.value && !validationOk.value
-    ? "border-red-500"
-    : "border-[#600098]"
+
+// If too short, show red border immediately; otherwise fall back to server validation state
+const phoneLengthMsg = computed(() =>
+  !s.phoneNumber ? "" : isPhoneLongEnough.value ? "" : isRTL.value ? " " : " "
 );
+
+// Message + state actually shown in the UI
+const activeValidationMsg = computed(
+  () => phoneLengthMsg.value || validationMsg.value
+);
+const activeValidationOk = computed(() =>
+  phoneLengthMsg.value ? false : validationOk.value
+);
+
+const phoneBorderClass = computed(() => {
+  if (phoneLengthMsg.value) return "border-red-500";
+  return validationMsg.value && !validationOk.value
+    ? "border-red-500"
+    : "border-[#600098]";
+});
 
 // Disclaimer text (switches with language)
 const disclaimer = computed(() =>
@@ -173,12 +194,22 @@ const copy = computed(() => ({
   error: isRTL.value
     ? "تعذر التحقق. حاول مرة أخرى."
     : "Couldn’t validate. Please try again.",
+  short: isRTL.value
+    ? "الرجاء إدخال 10 أرقام على الأقل."
+    : "Please enter at least 10 digits.",
 }));
 
 async function validateNow() {
+  // Always reset prior state
   validationMsg.value = "";
   validationOk.value = false;
   s.phoneValidated = false;
+
+  // Local length guard first
+  if (!isPhoneLongEnough.value) {
+    validationMsg.value = copy.value.short;
+    return false;
+  }
 
   try {
     validating.value = true;
