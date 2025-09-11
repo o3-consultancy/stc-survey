@@ -27,7 +27,7 @@
         <h2
           class="font-medium leading-[1.2] capitalize text-[50px] sm:text-[70px] md:text-[80px] lg:text-[100px]"
         >
-          أهلًا وسهلًا
+          أهلاً و سهلا
         </h2>
         <h1
           class="font-medium leading-[1.2] capitalize text-[50px] sm:text-[70px] md:text-[80px] lg:text-[100px]"
