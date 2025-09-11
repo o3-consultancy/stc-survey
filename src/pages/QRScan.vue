@@ -22,7 +22,7 @@
         <!-- rings -->
         <div class="relative">
           <div
-            class="rounded-full border-4 border-[#600098] w-[600px] h-[600px]"
+            class="rounded-full border-4 border-[#600098] w-[50vh] h-[50vh]"
           ></div>
           <div
             class="absolute inset-6 rounded-full bg-[#600098] opacity-90"
@@ -35,7 +35,7 @@
           <img
             :src="scanIcon"
             alt=""
-            class="absolute inset-0 m-auto w-[550px] h-[550px] object-contain"
+            class="absolute inset-0 m-auto w-[45vh] h-[45vh] object-contain"
           />
         </div>
 
@@ -278,7 +278,7 @@ async function submit() {
       qrId: s.qrId,
       name: s.name,
       company: s.company || null,
-      phoneCountryCode: "+0",
+      phoneCountryCode: "+000",
       phoneNumber: s.phoneNumber,
       interest: s.interest,
       thoughtsOnStc: s.interest === "None" ? s.thoughtsOnStc || null : null,
@@ -288,6 +288,7 @@ async function submit() {
         lang: s.lang,
       },
     };
+    console.log("Submitting", payload);
     const res = await submitSurvey(payload);
     if (res?.status === "success") {
       router.push({ name: "thanks" });

@@ -9,7 +9,7 @@
         :src="interestIcon"
         alt=""
         class="absolute z-10 pointer-events-none select-none"
-        :style="{ left: '64px', top: '88px', width: '200px', height: '200px' }"
+        :style="{ left: '64px', top: '88px', width: '20vh', height: '20vh' }"
       />
       <div
         class="absolute z-20 right-6 bottom-6 md:right-10 md:bottom-8 text-right"
@@ -102,7 +102,7 @@ function t(k) {
 const displayOptions = computed(() => [
   { value: "Smart Finance", label: t("opt1") },
   { value: "Business Portal Services", label: t("opt2") },
-  { value: "None", label: t("opt3") },
+  { value: "Share Your Idea", label: t("opt3") },
 ]);
 
 // Map display → backend enum
@@ -116,7 +116,7 @@ function toBackend(value) {
 function choose(value) {
   selected.value = value;
   s.interest = toBackend(value);
-  if (s.interest === "None") router.push({ name: "thoughts" });
+  if (s.interest === "Share Your Idea") router.push({ name: "thoughts" });
   else router.push({ name: "scan" });
 }
 </script>

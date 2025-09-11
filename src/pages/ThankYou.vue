@@ -15,7 +15,7 @@
         <!-- rings + icon -->
         <div class="relative">
           <div
-            class="rounded-full border-4 border-[#600098] w-[600px] h-[600px]"
+            class="rounded-full border-4 border-[#600098] w-[50vh] h-[50vh]"
           ></div>
           <div
             class="absolute inset-6 rounded-full bg-[#600098] opacity-90"
@@ -26,7 +26,7 @@
           <img
             :src="completeIcon"
             alt=""
-            class="absolute inset-0 m-auto w-[550px] h-[550px] object-contain"
+            class="absolute inset-0 m-auto w-[45vh] h-[45vh] object-contain"
           />
         </div>
 

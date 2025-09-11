@@ -10,7 +10,7 @@
         :src="raffleIcon"
         alt=""
         class="absolute z-10 pointer-events-none select-none"
-        :style="{ left: '64px', top: '88px', width: '200px', height: '200px' }"
+        :style="{ left: '64px', top: '88px', width: '20vh', height: '20vh' }"
       />
       <!-- Title -->
       <div
@@ -51,7 +51,6 @@
           class="block mb-3 font-medium text-[#600098]"
           :class="isRTL ? 'text-right' : 'text-left'"
         >
-          " STC Bank شارك فكرتك مع"
           {{ isRTL ? "STC Bank شارك فكرتك مع" : "Share your idea with us" }}
         </label>
 
