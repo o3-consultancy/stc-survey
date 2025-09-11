@@ -1,5 +1,157 @@
 @import "tailwindcss";
 
+/* ---------------------------
+   STC Forward: global web font
+   --------------------------- */
+:root {
+  --stc-font: "STCForward", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* Apply globally */
+html,
+body {
+  font-family: var(--stc-font);
+}
+
+/* Font faces
+   Note: You said files live in:
+   - /assets/fonts/TFFs/STCForward-{Type}.tff
+   - ./assets/fonts/OTFs/STCForward-{Type}.otf
+   If your TrueType files are actually .ttf, this will still work since we declare both.
+   Using font-display: swap for better CLS. */
+
+/* Thin (100) */
+@font-face {
+  font-family: "STCForward";
+  src: url("./assets/fonts/OTFs/STCForward-Thin.otf") format("opentype"),
+    url("./assets/fonts/TFFs/STCForward-Thin.tff") format("truetype"),
+    url("./assets/fonts/TFFs/STCForward-Thin.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "STCForward";
+  src: url("./assets/fonts/OTFs/STCForward-ThinItalic.otf") format("opentype"),
+    url("./assets/fonts/TFFs/STCForward-ThinItalic.tff") format("truetype"),
+    url("./assets/fonts/TFFs/STCForward-ThinItalic.ttf") format("truetype");
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Light (300) */
+@font-face {
+  font-family: "STCForward";
+  src: url("./assets/fonts/OTFs/STCForward-Light.otf") format("opentype"),
+    url("./assets/fonts/TFFs/STCForward-Light.tff") format("truetype"),
+    url("./assets/fonts/TFFs/STCForward-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "STCForward";
+  src: url("./assets/fonts/OTFs/STCForward-LightItalic.otf") format("opentype"),
+    url("./assets/fonts/TFFs/STCForward-LightItalic.tff") format("truetype"),
+    url("./assets/fonts/TFFs/STCForward-LightItalic.ttf") format("truetype");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Regular (400) */
+@font-face {
+  font-family: "STCForward";
+  src: url("./assets/fonts/OTFs/STCForward-Regular.otf") format("opentype"),
+    url("./assets/fonts/TFFs/STCForward-Regular.tff") format("truetype"),
+    url("./assets/fonts/TFFs/STCForward-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "STCForward";
+  src: url("./assets/fonts/OTFs/STCForward-Italic.otf") format("opentype"),
+    url("./assets/fonts/TFFs/STCForward-Italic.tff") format("truetype"),
+    url("./assets/fonts/TFFs/STCForward-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Medium (500) */
+@font-face {
+  font-family: "STCForward";
+  src: url("./assets/fonts/OTFs/STCForward-Medium.otf") format("opentype"),
+    url("./assets/fonts/TFFs/STCForward-Medium.tff") format("truetype"),
+    url("./assets/fonts/TFFs/STCForward-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "STCForward";
+  src: url("./assets/fonts/OTFs/STCForward-MediumItalic.otf") format("opentype"),
+    url("./assets/fonts/TFFs/STCForward-MediumItalic.tff") format("truetype"),
+    url("./assets/fonts/TFFs/STCForward-MediumItalic.ttf") format("truetype");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Bold (700) */
+@font-face {
+  font-family: "STCForward";
+  src: url("./assets/fonts/OTFs/STCForward-Bold.otf") format("opentype"),
+    url("./assets/fonts/TFFs/STCForward-Bold.tff") format("truetype"),
+    url("./assets/fonts/TFFs/STCForward-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "STCForward";
+  src: url("./assets/fonts/OTFs/STCForward-BoldItalic.otf") format("opentype"),
+    url("./assets/fonts/TFFs/STCForward-BoldItalic.tff") format("truetype"),
+    url("./assets/fonts/TFFs/STCForward-BoldItalic.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ExtraBold (800) */
+@font-face {
+  font-family: "STCForward";
+  src: url("./assets/fonts/OTFs/STCForward-ExtraBold.otf") format("opentype"),
+    url("./assets/fonts/TFFs/STCForward-ExtraBold.tff") format("truetype"),
+    url("./assets/fonts/TFFs/STCForward-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "STCForward";
+  src: url("./assets/fonts/OTFs/STCForward-ExtraBoldItalic.otf") format("opentype"),
+    url("./assets/fonts/TFFs/STCForward-ExtraBoldItalic.tff") format("truetype"),
+    url("./assets/fonts/TFFs/STCForward-ExtraBoldItalic.ttf") format("truetype");
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ---------------------------
+   Your existing utilities
+   --------------------------- */
+
 /* Your helpers still work with @apply */
 .btn {
   @apply inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium transition;
