@@ -10,7 +10,7 @@
         :src="raffleIcon"
         alt=""
         class="absolute z-10 pointer-events-none select-none"
-        :style="{ left: '64px', top: '88px', width: '20vh', height: '20vh' }"
+        :style="{ left: '5vw', top: '5vh', width: '20vh', height: '20vh' }"
       />
       <!-- Title -->
       <div
