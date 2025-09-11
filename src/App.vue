@@ -3,7 +3,7 @@
     <main class="page-inner">
       <router-view />
     </main>
-    <footer class="text-center text-xs text-slate-400 py-6">© STC</footer>
+    <!-- <footer class="text-center text-xs text-slate-400 py-6">© STC</footer> -->
   </div>
 </template>
 

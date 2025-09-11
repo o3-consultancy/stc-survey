@@ -182,5 +182,5 @@ body {
 }
 
 .page-inner {
-  @apply max-w-xl w-full mx-auto p-6 flex-1;
+  @apply max-w-xl w-full flex-1;
 }

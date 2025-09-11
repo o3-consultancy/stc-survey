@@ -1,0 +1,67 @@
+<svg width="1351" height="1351" viewBox="0 0 1351 1351" fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <circle cx="675.5" cy="675.5" r="668.588" stroke="#47047D" stroke-width="13.8233"/>
+    <circle cx="675.5" cy="675.5" r="579.198" fill="#57009B" stroke="#47047D" stroke-width="13.8233"/>
+    <circle cx="675.5" cy="675.5" r="474.324" fill="#6000A9"/>
+    <g clip-path="url(#clip0_1_962)">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M1023.82 605.999L972.153 880.009C967.14 906.592 941.488 924.105 914.905 919.093L393.394 820.755C366.811 815.742 349.298 790.09 354.311 763.507L405.979 489.496C410.992 462.913 436.644 445.4 463.227 450.413L984.738 548.75C1011.32 553.763 1028.83 579.415 1023.82 605.999Z" fill="#500087" stroke="white" stroke-width="7.13403" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M1023.02 611.352L1000.81 729.246L383.115 612.728L405.067 494.854L1023.02 611.352L1023.02 611.352Z" fill="white" fill-opacity="0.2" stroke="white" stroke-width="5.70928" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M1045.84 623.976L1052.21 590.215C1057.57 561.783 1038.96 534.371 1010.69 529.039L911.623 510.359L912.926 504.248L1011.85 522.901C1043.49 528.868 1064.31 559.547 1058.31 591.366L1051.92 625.274L1045.84 623.976ZM999.026 905.245C991.583 935.171 962.07 954.488 931.55 948.734L925.14 947.525L926.442 941.414L932.707 942.595C959.906 947.724 986.21 930.567 992.947 903.947L999.026 905.245ZM369.147 494.862L375.237 462.564C381.237 430.743 411.801 409.754 443.446 415.721L465.933 419.962L464.63 426.073L442.288 421.86C414.012 416.528 386.703 435.282 381.342 463.715L375.224 496.159L369.147 494.862Z" fill="#00C48C"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M939.314 788.188L928.039 856.917C926.428 866.733 917.151 873.395 907.335 871.785L824.369 858.173C814.553 856.562 807.891 847.285 809.502 837.47L820.778 768.741C822.388 758.925 831.665 752.263 841.481 753.873L924.447 767.485C934.263 769.096 940.925 778.373 939.314 788.188Z" fill="#00B187" stroke="white" stroke-width="5.70928" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M497.983 673.081L638.862 699.44" stroke="white" stroke-width="5.70928" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M565.819 714.378L619.841 724.624" stroke="white" stroke-width="5.70928" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M527.095 734.223L627.807 753.152" stroke="white" stroke-width="5.70928" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M431.272 716.335L477.962 725.018" stroke="white" stroke-width="5.70928" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M440.035 663.275L463.511 667.005" stroke="white" stroke-width="5.70928" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M426.759 743.476L460.009 749.291" stroke="white" stroke-width="5.70928" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M489.593 754.323L535.061 762.745" stroke="white" stroke-width="5.70928" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M557.055 767.438L617.185 778.988" stroke="white" stroke-width="5.70928" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M517.11 787.021L584.572 800.134" stroke="white" stroke-width="5.70928" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M421.287 769.136L470.421 778.34" stroke="white" stroke-width="5.70928" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M435.522 690.414L531.495 707.599" stroke="white" stroke-width="5.70928" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <path d="M919.711 923.206C734.779 947.026 392.77 960.227 391.663 918.366C390.556 876.504 733.856 912.142 919.711 923.206Z" fill="url(#paint0_linear_1_962)" fill-opacity="0.8"/>
+    <ellipse cx="402.259" cy="971.319" rx="87.087" ry="8.294" fill="black" fill-opacity="0.2"/>
+    <ellipse cx="401.798" cy="834.005" rx="133.626" ry="137.312" fill="url(#paint1_radial_1_962)"/>
+    <g clip-path="url(#clip1_1_962)">
+        <path d="M443.278 784.938L385.67 842.545L360.319 817.194L340.054 837.459L385.67 883.075L463.542 805.203L443.278 784.938Z" fill="white"/>
+    </g>
+    <ellipse cx="1025.35" cy="361.526" rx="89.0534" ry="91.5101" fill="url(#paint2_radial_1_962)"/>
+    <g clip-path="url(#clip2_1_962)">
+        <path d="M1052.99 328.824L1014.6 367.216L997.708 350.321L984.202 363.827L1014.6 394.227L1066.5 342.33L1052.99 328.824Z" fill="white"/>
+    </g>
+    <ellipse cx="551.09" cy="201.352" rx="49.7641" ry="51.1369" fill="url(#paint3_radial_1_962)"/>
+    <g clip-path="url(#clip3_1_962)">
+        <path d="M566.537 183.078L545.083 204.532L535.642 195.091L528.095 202.638L545.083 219.626L574.084 190.625L566.537 183.078Z" fill="white"/>
+    </g>
+    <defs>
+        <linearGradient id="paint0_linear_1_962" x1="391.66" y1="922.015" x2="919.711" y2="922.015" gradientUnits="userSpaceOnUse">
+            <stop stop-opacity="0"/>
+            <stop offset="1" stop-opacity="0.78"/>
+        </linearGradient>
+        <radialGradient id="paint1_radial_1_962" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(401.798 834.005) rotate(90) scale(137.312 133.626)">
+            <stop stop-color="#00C48C"/>
+            <stop offset="1" stop-color="#00B380"/>
+        </radialGradient>
+        <radialGradient id="paint2_radial_1_962" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1025.35 361.526) rotate(90) scale(91.5101 89.0534)">
+            <stop stop-color="#00C48C"/>
+            <stop offset="1" stop-color="#00B380"/>
+        </radialGradient>
+        <radialGradient id="paint3_radial_1_962" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(551.09 201.352) rotate(90) scale(51.1369 49.7641)">
+            <stop stop-color="#00C48C"/>
+            <stop offset="1" stop-color="#00B380"/>
+        </radialGradient>
+        <clipPath id="clip0_1_962">
+            <rect width="702.519" height="433.565" fill="white" transform="translate(390.621 390.365) rotate(12.0418)"/>
+        </clipPath>
+        <clipPath id="clip1_1_962">
+            <rect width="123.488" height="123.488" fill="white" transform="translate(340.054 772.262)"/>
+        </clipPath>
+        <clipPath id="clip2_1_962">
+            <rect width="82.2977" height="82.2977" fill="white" transform="translate(984.202 320.377)"/>
+        </clipPath>
+        <clipPath id="clip3_1_962">
+            <rect width="45.9888" height="45.9888" fill="white" transform="translate(528.095 178.357)"/>
+        </clipPath>
+    </defs>
+</svg>

@@ -1,64 +1,124 @@
 <template>
-  <div class="card">
-    <h2 class="text-xl font-semibold mb-4">{{ t("personalInfo") }}</h2>
-
-    <div class="mb-4">
-      <label class="label">{{ t("fullName") }}</label>
-      <input class="input" v-model="s.name" :placeholder="t('fullNamePh')" />
-    </div>
-
-    <div class="mb-4">
-      <label class="label">{{ t("companyName") }}</label>
-      <input
-        class="input"
-        v-model="s.company"
-        :placeholder="t('companyNamePh')"
+  <div
+    class="min-h-screen w-screen bg-white text-slate-900"
+    :dir="isRTL ? 'rtl' : 'ltr'"
+  >
+    <!-- HEADER -->
+    <header class="relative bg-[#00C48C] min-h-[40vh] [min-height:40svh]">
+      <img
+        :src="infoIcon"
+        alt=""
+        class="absolute z-10 pointer-events-none select-none"
+        :style="{ left: '64px', top: '88px', width: '200px', height: '200px' }"
       />
-    </div>
-
-    <div class="mb-2">
-      <label class="label">{{ t("phone") }}</label>
-      <div class="flex gap-2">
-        <CountryCodeSelect v-model="s.phoneCountryCode" class="w-40" />
-        <input
-          class="input"
-          v-model="s.phoneNumber"
-          :placeholder="t('phoneNumberPh')"
-        />
-        <button
-          class="btn btn-secondary shrink-0"
-          @click="doValidate"
-          :disabled="validating || !canValidate"
-        >
-          {{ validating ? t("validating") : t("validate") }}
-        </button>
-      </div>
-      <p
-        v-if="validationMsg"
-        class="mt-2 text-sm"
-        :class="validationOk ? 'text-green-600' : 'text-red-600'"
+      <div
+        class="absolute z-20 right-6 bottom-6 md:right-10 md:bottom-8 text-right"
       >
-        {{ validationMsg }}
-      </p>
-    </div>
+        <h1 class="text-white font-bold capitalize leading-[1.1]">
+          <template v-if="!isRTL">
+            <span
+              class="block text-[50px] sm:text-[70px] md:text-[80px] lg:text-[100px]"
+              >Guest</span
+            >
+            <span
+              class="block text-[50px] sm:text-[70px] md:text-[80px] lg:text-[100px]"
+              >Registration</span
+            >
+          </template>
+          <template v-else>
+            <span
+              class="block text-[50px] sm:text-[70px] md:text-[80px] lg:text-[100px]"
+              >تسجيل</span
+            >
+            <span
+              class="block text-[50px] sm:text-[70px] md:text-[80px] lg:text-[100px]"
+              >الضيوف</span
+            >
+          </template>
+        </h1>
+      </div>
+    </header>
 
-    <div class="mt-6 flex justify-between">
-      <button class="btn btn-secondary" @click="backToStart">
-        {{ t("back") }}
-      </button>
-      <button class="btn btn-primary" :disabled="!canNext" @click="next">
-        {{ t("next") }}
-      </button>
-    </div>
-  </div>
+    <!-- FORM -->
+    <main
+      class="min-h-[60vh] [min-height:60svh] grid place-items-center px-6 py-8"
+    >
+      <form class="w-full max-w-xl">
+        <!-- Name -->
+        <div class="mb-8">
+          <label class="block text-[#600098] font-medium mb-2">
+            {{ isRTL ? "الاسم" : "Name" }}
+          </label>
+          <input
+            class="w-full bg-transparent outline-none border-0 border-b-2 focus:ring-0 text-lg pb-2"
+            :class="nameBorderClass"
+            v-model="s.name"
+            :placeholder="isRTL ? 'اكتب اسمك' : 'Type your name'"
+          />
+        </div>
 
-  <div v-if="showDuplicate" class="mt-6 card border border-red-200">
-    <p class="text-red-700">{{ t("alreadySubmitted") }}</p>
-    <div class="mt-4">
-      <button class="btn btn-secondary" @click="backToStart">
-        {{ t("returnStart") }}
-      </button>
-    </div>
+        <!-- Company -->
+        <div class="mb-8">
+          <label class="block text-[#600098] font-medium mb-2">
+            {{ isRTL ? "الشركة" : "Company" }}
+          </label>
+          <input
+            class="w-full bg-transparent outline-none border-0 border-b-2 focus:ring-0 text-lg pb-2 border-[#600098]"
+            v-model="s.company"
+            :placeholder="isRTL ? 'اختياري' : 'Optional'"
+          />
+        </div>
+
+        <!-- Phone -->
+        <div class="mb-3">
+          <label class="block text-[#600098] font-medium mb-2">
+            {{ isRTL ? "رقم الهاتف" : "Phone Number" }}
+          </label>
+
+          <div
+            class="w-full flex gap-3 items-end"
+            :class="isRTL ? 'flex-row-reverse' : ''"
+          >
+            <!-- <CountryCodeSelect v-model="s.phoneCountryCode" class="w-40 shrink-0" /> -->
+            <input
+              class="flex-1 min-w-0 bg-transparent outline-none border-0 border-b-2 focus:ring-0 text-lg pb-2"
+              :class="phoneBorderClass"
+              v-model="s.phoneNumber"
+              :placeholder="isRTL ? 'رقم الهاتف' : 'Phone number'"
+              inputmode="tel"
+            />
+          </div>
+
+          <!-- Inline validation message -->
+          <p
+            v-if="validationMsg"
+            class="mt-3 text-sm"
+            :class="validationOk ? 'text-green-600' : 'text-red-600'"
+          >
+            {{ validationMsg }}
+          </p>
+        </div>
+
+        <!-- DISCLAIMER -->
+        <p
+          class="mt-8 text-xs leading-5 text-slate-600"
+          :class="isRTL ? 'text-right' : 'text-left'"
+        >
+          {{ disclaimer }}
+        </p>
+
+        <!-- NEXT -->
+        <div class="mt-6 flex justify-center">
+          <button
+            class="min-w-[240px] rounded-xl px-8 py-4 text-xl font-semibold text-white bg-[#600098] transition shadow-[0_6px_0_0_#00C48C] active:translate-y-[2px] active:shadow-[0_4px_0_0_#00C48C] disabled:opacity-50 disabled:cursor-not-allowed"
+            :disabled="!canClickNext"
+            @click.prevent="onNext"
+          >
+            {{ isRTL ? "التالي" : "Next" }}
+          </button>
+        </div>
+      </form>
+    </main>
   </div>
 </template>
 
@@ -68,64 +128,58 @@ import { useRouter } from "vue-router";
 import { useSurveyStore } from "../store";
 import { validatePhone } from "../api/client";
 import CountryCodeSelect from "../components/CountryCodeSelect.vue";
+import infoIcon from "../assets/svg/info.svg";
 
 const s = useSurveyStore();
 const router = useRouter();
+
+const isRTL = computed(() => s.lang === "ar");
 
 const validating = ref(false);
 const validationMsg = ref("");
 const validationOk = ref(false);
 
-const canValidate = computed(() => !!s.phoneCountryCode && !!s.phoneNumber);
-const canNext = computed(() => !!s.name.trim() && s.phoneValidated);
-const showDuplicate = computed(
-  () => validationMsg.value && !validationOk.value
+const canClickNext = computed(
+  () =>
+    !!s.name.trim() &&
+    !!s.phoneCountryCode &&
+    !!s.phoneNumber &&
+    !validating.value
 );
 
-const i18n = {
-  en: {
-    personalInfo: "Personal Information",
-    fullName: "Full Name",
-    fullNamePh: "Type your full name",
-    companyName: "Company Name (optional)",
-    companyNamePh: "Type your company",
-    phone: "Phone (country code + number)",
-    phoneNumberPh: "Phone number",
-    validate: "Validate",
-    validating: "Validating...",
-    next: "Next",
-    back: "Back",
-    alreadySubmitted: "You've already submitted the survey with this phone.",
-    returnStart: "Return to start",
-    ok: "Phone is valid and unique. You can proceed.",
-    invalid: "This phone already has a submission.",
-  },
-  ar: {
-    personalInfo: "المعلومات الشخصية",
-    fullName: "الاسم الكامل",
-    fullNamePh: "اكتب اسمك الكامل",
-    companyName: "اسم الشركة (اختياري)",
-    companyNamePh: "اكتب اسم شركتك",
-    phone: "رقم الهاتف (رمز الدولة + الرقم)",
-    phoneNumberPh: "رقم الهاتف",
-    validate: "تحقق",
-    validating: "جارٍ التحقق...",
-    next: "التالي",
-    back: "رجوع",
-    alreadySubmitted: "لقد قمت بإرسال الاستبيان بهذا الرقم مسبقاً.",
-    returnStart: "العودة للبداية",
-    ok: "الرقم صالح وفريد. يمكنك المتابعة.",
-    invalid: "تم العثور على إرسال سابق لهذا الرقم.",
-  },
-};
-function t(key) {
-  return i18n[s.lang][key];
-}
+const nameBorderClass = computed(() =>
+  s.name.trim() ? "border-[#600098]" : "border-[#600098]/60"
+);
+const phoneBorderClass = computed(() =>
+  validationMsg.value && !validationOk.value
+    ? "border-red-500"
+    : "border-[#600098]"
+);
 
-async function doValidate() {
+// Disclaimer text (switches with language)
+const disclaimer = computed(() =>
+  isRTL.value
+    ? "من خلال تزويدنا بمعلوماتك، فإنك توافق على جمع واستخدام بياناتك الشخصية من قبل STC Bank لأغراض التسجيل، والترويج للمنتجات، والمشاركة في السحب. ولن يتم مشاركة بياناتك مع أطراف ثالثة، كما يمكنك سحب موافقتك في أي وقت عبر التواصل معنا."
+    : "By providing your information, you consent to the collection use and processing of your personal data by STC Bank for the purposes of registration, product promotions, and participation in the lucky draw your data will not be shared with third parties you may withdraw your consent at any time by contacting us."
+);
+
+const copy = computed(() => ({
+  ok: isRTL.value
+    ? "الرقم صالح وفريد. يمكنك المتابعة."
+    : "Phone is valid and unique. You can proceed.",
+  invalid: isRTL.value
+    ? "تم العثور على إرسال سابق لهذا الرقم."
+    : "This phone already has a submission.",
+  error: isRTL.value
+    ? "تعذر التحقق. حاول مرة أخرى."
+    : "Couldn’t validate. Please try again.",
+}));
+
+async function validateNow() {
   validationMsg.value = "";
   validationOk.value = false;
   s.phoneValidated = false;
+
   try {
     validating.value = true;
     const { status, exists } = await validatePhone(
@@ -134,24 +188,26 @@ async function doValidate() {
     );
     if (status === "success" && !exists) {
       validationOk.value = true;
-      validationMsg.value = t("ok");
+      validationMsg.value = copy.value.ok;
       s.phoneValidated = true;
+      return true;
     } else {
       validationOk.value = false;
-      validationMsg.value = t("invalid");
+      validationMsg.value = copy.value.invalid;
+      return false;
     }
   } catch (e) {
     validationOk.value = false;
-    validationMsg.value = String(e?.message || e);
+    validationMsg.value = copy.value.error;
+    return false;
   } finally {
     validating.value = false;
   }
 }
 
-function backToStart() {
-  router.push({ name: "start" });
-}
-function next() {
+async function onNext() {
+  const ok = await validateNow();
+  if (!ok) return;
   router.push({ name: "interest" });
 }
 </script>

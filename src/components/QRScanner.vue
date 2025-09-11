@@ -1,63 +1,43 @@
 <template>
-  <div>
-    <div v-if="!manual" class="mb-3 text-sm text-slate-600">
-      Align the QR inside the frame.
-    </div>
+  <div class="w-full flex flex-col items-center">
+    <!-- Square mount equal to frame -->
     <div
-      v-show="!manual"
-      :id="elementId"
-      class="rounded-xl overflow-hidden bg-black"
-    ></div>
+      class="relative rounded-lg overflow-hidden"
+      :style="{ width: boxPx + 'px', height: boxPx + 'px' }"
+    >
+      <!-- Camera mount -->
+      <div :id="elementId" class="absolute inset-0"></div>
 
-    <div class="mt-4 flex items-center gap-2">
-      <button class="btn btn-secondary" type="button" @click="toggleMode">
-        {{ manual ? "Use Camera" : "Enter Manually" }}
-      </button>
-    </div>
+      <!-- Green frame -->
+      <div
+        class="absolute inset-2 rounded-lg border-2 border-[#00C48C] pointer-events-none"
+      ></div>
 
-    <div v-if="manual" class="mt-4">
-      <label class="label">QR ID</label>
-      <input
-        class="input"
-        v-model="manualQr"
-        placeholder="Type scanned QR ID"
-      />
-      <div class="mt-3">
-        <button
-          class="btn btn-primary"
-          :disabled="!manualQr.trim()"
-          @click="emitScan(manualQr.trim())"
-        >
-          Use This
-        </button>
-      </div>
+      <!-- White corners -->
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, onBeforeUnmount, ref } from "vue";
+import { onMounted, onBeforeUnmount, ref, computed } from "vue";
 
 const props = defineProps({
   fps: { type: Number, default: 10 },
-  qrbox: { type: Number, default: 250 },
+  qrbox: { type: Number, default: 320 },
+  rtl: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(["scanned", "error"]);
 
 const elementId = "qr-reader-" + Math.random().toString(36).slice(2);
 const html5QrcodeRef = ref(null);
-const manual = ref(false);
-const manualQr = ref("");
 
-function toggleMode() {
-  manual.value = !manual.value;
-  if (manual.value) stopScanner();
-  else startScanner();
-}
-function emitScan(code) {
-  emit("scanned", code);
-}
+// Outer square matches the overlay; qrbox is the detection area passed to the lib
+const boxPx = computed(() => props.qrbox + 80);
 
 async function startScanner() {
   try {
@@ -70,7 +50,7 @@ async function startScanner() {
         stopScanner();
         emit("scanned", decodedText);
       },
-      (errMsg) => {}
+      () => {}
     );
   } catch (e) {
     emit("error", e?.message || String(e));
@@ -89,3 +69,55 @@ async function stopScanner() {
 onMounted(() => startScanner());
 onBeforeUnmount(() => stopScanner());
 </script>
+
+<style scoped>
+/* Force the library's video to fit our square (no rectangular overflow) */
+:deep([id^="qr-reader-"] video) {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 0.5rem; /* match rounded-lg */
+}
+:deep([id^="qr-reader-"] div) {
+  /* prevent internal absolute wrappers from exceeding mount */
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+/* Corner styling (white) */
+.corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+  border-color: white;
+}
+.corner.tl {
+  left: 8px;
+  top: 8px;
+  border-top: 6px solid white;
+  border-left: 6px solid white;
+  border-radius: 10px 0 0 0;
+}
+.corner.tr {
+  right: 8px;
+  top: 8px;
+  border-top: 6px solid white;
+  border-right: 6px solid white;
+  border-radius: 0 10px 0 0;
+}
+.corner.bl {
+  left: 8px;
+  bottom: 8px;
+  border-bottom: 6px solid white;
+  border-left: 6px solid white;
+  border-radius: 0 0 0 10px;
+}
+.corner.br {
+  right: 8px;
+  bottom: 8px;
+  border-bottom: 6px solid white;
+  border-right: 6px solid white;
+  border-radius: 0 0 10px 0;
+}
+</style>
