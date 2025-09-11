@@ -51,7 +51,8 @@
           class="block mb-3 font-medium text-[#600098]"
           :class="isRTL ? 'text-right' : 'text-left'"
         >
-          {{ isRTL ? "STC Bank شارك فكرتك مع" : "Share your idea with us" }}
+          <p v-if="isRTL">شارك فكرتك مع <bdi dir="ltr">STC&nbsp;Bank</bdi></p>
+          <p v-else>Share your idea with us</p>
         </label>
 
         <!-- Big textarea -->
