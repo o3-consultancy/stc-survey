@@ -2,11 +2,20 @@
   <div class="w-full flex flex-col items-center">
     <!-- Square mount equal to frame -->
     <div
-      class="relative rounded-lg overflow-hidden"
+      class="relative rounded-lg overflow-hidden bg-black"
       :style="{ width: boxPx + 'px', height: boxPx + 'px' }"
     >
-      <!-- Camera mount -->
-      <div :id="elementId" class="absolute inset-0"></div>
+      <!-- Camera video -->
+      <video
+        ref="videoEl"
+        class="absolute inset-0 w-full h-full object-cover rounded-lg"
+        playsinline
+        autoplay
+        muted
+      ></video>
+
+      <!-- (Hidden) canvas used for decoding frames -->
+      <canvas ref="canvasEl" class="hidden"></canvas>
 
       <!-- Green frame -->
       <div
@@ -24,88 +33,171 @@
 
 <script setup>
 import { onMounted, onBeforeUnmount, ref, computed } from "vue";
+import jsQR from "jsqr";
 
 const props = defineProps({
-  fps: { type: Number, default: 10 },
-  qrbox: { type: Number, default: 320 },
+  fps: { type: Number, default: 12 }, // decode throttle
+  qrbox: { type: Number, default: 320 }, // size of square decode area (px)
   rtl: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(["scanned", "error"]);
 
-const elementId = "qr-reader-" + Math.random().toString(36).slice(2);
-const html5QrcodeRef = ref(null);
+const videoEl = ref(null);
+const canvasEl = ref(null);
+let stream = null;
+let rafId = null;
+let lastDecodeTs = 0;
+
 const isIOS =
   /iP(hone|ad|od)/i.test(navigator.userAgent) ||
   (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-// Outer square matches the overlay; qrbox is the detection area passed to the lib
+// Outer square matches the overlay; qrbox is the decoding square we crop into
 const boxPx = computed(() => props.qrbox + 80);
 
 async function startScanner() {
   try {
-    if (!window.Html5Qrcode) throw new Error("Scanner library not loaded");
-    html5QrcodeRef.value = new window.Html5Qrcode(elementId);
-    const cameras = await window.Html5Qrcode.getCameras();
-    const backCam =
-      cameras?.find((c) => /back|rear|environment/i.test(c.label)) ||
-      cameras?.[cameras.length - 1] ||
-      null;
-    const cameraConfig = backCam
-      ? { deviceId: { exact: backCam.id } }
-      : { facingMode: "environment" };
-    await html5QrcodeRef.value.start(
-      cameraConfig,
-      {
-        fps: props.fps,
-        qrbox: props.qrbox,
-        aspectRatio: isIOS ? 1.7777777778 : undefined,
-      },
-      (decodedText) => {
-        stopScanner();
-        emit("scanned", decodedText);
-      },
-      () => {}
-    );
-    const v = document.querySelector(`#${elementId} video`);
-    if (v) {
-      v.setAttribute("playsinline", "true");
-      v.setAttribute("muted", "true");
-      v.muted = true;
-      v.removeAttribute("controls");
+    if (location.protocol !== "https:" && location.hostname !== "localhost") {
+      throw new Error("Camera requires HTTPS or localhost");
     }
+
+    const v = videoEl.value;
+    const c = canvasEl.value;
+
+    // 1) Prefer a back camera if possible
+    let constraints = {
+      audio: false,
+      video: {
+        facingMode: { ideal: "environment" },
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+      },
+    };
+
+    try {
+      stream = await navigator.mediaDevices.getUserMedia(constraints);
+    } catch (e) {
+      // Fallback: enumerate and pick a camera by deviceId
+      const tmp = await navigator.mediaDevices
+        .getUserMedia({ video: true, audio: false })
+        .catch(() => null);
+      if (tmp) tmp.getTracks().forEach((t) => t.stop());
+
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const cams = devices.filter((d) => d.kind === "videoinput");
+      if (!cams.length) throw e;
+
+      const backLike =
+        cams.find((d) => /back|rear|environment|0\b/i.test(d.label || "")) ||
+        cams[cams.length - 1];
+
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: { deviceId: { exact: backLike.deviceId } },
+      });
+    }
+
+    // 2) Attach stream to <video> (iOS needs these flags)
+    v.srcObject = stream;
+    v.setAttribute("playsinline", "true");
+    v.setAttribute("muted", "true");
+    v.muted = true;
+    v.autoplay = true;
+
+    await v.play().catch(() => {
+      /* iOS sometimes resolves only after a frame */
+    });
+
+    // 3) Start decode loop
+    lastDecodeTs = 0;
+    loop();
   } catch (e) {
+    stopScanner();
     emit("error", e?.message || String(e));
   }
 }
-async function stopScanner() {
-  try {
-    if (html5QrcodeRef.value) {
-      await html5QrcodeRef.value.stop();
-      await html5QrcodeRef.value.clear();
-      html5QrcodeRef.value = null;
-    }
-  } catch {}
+
+function loop(ts = 0) {
+  rafId = requestAnimationFrame(loop);
+
+  // Throttle decoding by FPS
+  const minGap = 1000 / Math.max(1, props.fps);
+  if (ts - lastDecodeTs < minGap) return;
+  lastDecodeTs = ts;
+
+  const v = videoEl.value;
+  const c = canvasEl.value;
+  if (!v || !c || v.readyState < 2) return; // not enough data
+
+  const vw = v.videoWidth;
+  const vh = v.videoHeight;
+  if (!vw || !vh) return;
+
+  // We crop a centered square from the video, then scale to qrbox size
+  const square = Math.min(vw, vh);
+  const sx = (vw - square) / 2;
+  const sy = (vh - square) / 2;
+
+  c.width = props.qrbox;
+  c.height = props.qrbox;
+
+  const ctx = c.getContext("2d", { willReadFrequently: true });
+  // Slight contrast boost helps iOS with stylized codes
+  ctx.filter = "contrast(1.2) brightness(1.05)";
+  ctx.drawImage(v, sx, sy, square, square, 0, 0, c.width, c.height);
+  ctx.filter = "none";
+
+  const img = ctx.getImageData(0, 0, c.width, c.height);
+
+  // jsQR with inversion attempts handles white-on-dark codes
+  const result = jsQR(img.data, img.width, img.height, {
+    inversionAttempts: "attemptBoth",
+  });
+
+  if (result && result.data) {
+    // Optional: draw a thin guide (not visible because canvas is hidden)
+    // ctx.strokeStyle = "#00C48C";
+    // ctx.lineWidth = 2;
+    // ctx.beginPath();
+    // result.location && result.location.corners?.forEach((p, i) => {
+    //   if (i === 0) ctx.moveTo(p.x, p.y);
+    //   else ctx.lineTo(p.x, p.y);
+    // });
+    // ctx.closePath(); ctx.stroke();
+
+    const text = result.data.trim();
+    stopScanner();
+    emit("scanned", text);
+  }
 }
 
-onMounted(() => startScanner());
+async function stopScanner() {
+  try {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+    if (stream) {
+      stream.getTracks().forEach((t) => t.stop());
+      stream = null;
+    }
+    const v = videoEl.value;
+    if (v) v.srcObject = null;
+  } catch {
+    /* noop */
+  }
+}
+
+onMounted(() => {
+  // Start from a user gesture if your page auto-mounts this component
+  // Otherwise, call startScanner() from a click/tap in the parent.
+  startScanner();
+});
 onBeforeUnmount(() => stopScanner());
 </script>
 
 <style scoped>
-/* Force the library's video to fit our square (no rectangular overflow) */
-:deep([id^="qr-reader-"] video) {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  border-radius: 0.5rem; /* match rounded-lg */
-}
-:deep([id^="qr-reader-"] div) {
-  /* prevent internal absolute wrappers from exceeding mount */
-  max-width: 100% !important;
-  max-height: 100% !important;
-}
-
 /* Corner styling (white) */
 .corner {
   position: absolute;
