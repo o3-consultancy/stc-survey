@@ -35,6 +35,9 @@ const emit = defineEmits(["scanned", "error"]);
 
 const elementId = "qr-reader-" + Math.random().toString(36).slice(2);
 const html5QrcodeRef = ref(null);
+const isIOS =
+  /iP(hone|ad|od)/i.test(navigator.userAgent) ||
+  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
 // Outer square matches the overlay; qrbox is the detection area passed to the lib
 const boxPx = computed(() => props.qrbox + 80);
@@ -43,15 +46,34 @@ async function startScanner() {
   try {
     if (!window.Html5Qrcode) throw new Error("Scanner library not loaded");
     html5QrcodeRef.value = new window.Html5Qrcode(elementId);
+    const cameras = await window.Html5Qrcode.getCameras();
+    const backCam =
+      cameras?.find((c) => /back|rear|environment/i.test(c.label)) ||
+      cameras?.[cameras.length - 1] ||
+      null;
+    const cameraConfig = backCam
+      ? { deviceId: { exact: backCam.id } }
+      : { facingMode: "environment" };
     await html5QrcodeRef.value.start(
-      { facingMode: "environment" },
-      { fps: props.fps, qrbox: props.qrbox },
+      cameraConfig,
+      {
+        fps: props.fps,
+        qrbox: props.qrbox,
+        aspectRatio: isIOS ? 1.7777777778 : undefined,
+      },
       (decodedText) => {
         stopScanner();
         emit("scanned", decodedText);
       },
       () => {}
     );
+    const v = document.querySelector(`#${elementId} video`);
+    if (v) {
+      v.setAttribute("playsinline", "true");
+      v.setAttribute("muted", "true");
+      v.muted = true;
+      v.removeAttribute("controls");
+    }
   } catch (e) {
     emit("error", e?.message || String(e));
   }
