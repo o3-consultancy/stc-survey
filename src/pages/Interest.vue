@@ -85,14 +85,16 @@ const i18n = {
     hdrBottom: "Your Interest",
     opt1: "Smart Finance",
     opt2: "Business Portal Services",
-    opt3: "Share Your Idea",
+    opt3: "Smart Saver",
+    opt4: "Share Your Idea",
   },
   ar: {
     hdrTop: "أرسل",
     hdrBottom: "اهتمامك",
     opt1: "تمويل سمارت",
     opt2: "خدمات بوابة الأعمال",
-    opt3: "شاركنا فكرتك",
+    opt3: "ادخار سمارت",
+    opt4: "شاركنا فكرتك",
   },
 };
 function t(k) {
@@ -102,7 +104,8 @@ function t(k) {
 const displayOptions = computed(() => [
   { value: "Smart Finance", label: t("opt1") },
   { value: "Business Portal Services", label: t("opt2") },
-  { value: "Share Your Idea", label: t("opt3") },
+  { value: "Smart Saver", label: t("opt3") },
+  { value: "Share Your Idea", label: t("opt4") },
 ]);
 
 // Map display → backend enum
@@ -110,6 +113,7 @@ function toBackend(value) {
   if (value === "Smart Finance" || value === "Smart Finanace")
     return "Smart Finance";
   if (value === "Business Portal Services") return "Business Portal Service"; // backend enum
+  if (value === "Smart Saver") return "Smart Saver";
   return value; // "None"
 }
 

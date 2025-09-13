@@ -79,7 +79,22 @@
             class="w-full flex gap-3 items-end"
             :class="isRTL ? 'flex-row-reverse' : ''"
           >
-            <!-- <CountryCodeSelect v-model="s.phoneCountryCode" class="w-40 shrink-0" /> -->
+            <!-- Country code selector -->
+            <select
+              v-model="s.phoneCountryCode"
+              class="w-28 sm:w-36 bg-transparent outline-none border-0 border-b-2 focus:ring-0 text-lg pb-2 border-[#600098]"
+              :aria-label="isRTL ? 'رمز الدولة' : 'Country code'"
+              dir="ltr"
+            >
+              <option disabled value="">
+                {{ isRTL ? "اختر الرمز" : "Code" }}
+              </option>
+              <option v-for="c in countryCodes" :key="c.code" :value="c.code">
+                {{ c.code }} ({{ isRTL ? c.ar : c.en }})
+              </option>
+            </select>
+
+            <!-- Phone number input -->
             <input
               class="flex-1 min-w-0 bg-transparent outline-none border-0 border-b-2 focus:ring-0 text-lg pb-2"
               :class="phoneBorderClass"
@@ -123,11 +138,10 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useSurveyStore } from "../store";
 import { validatePhone } from "../api/client";
-import CountryCodeSelect from "../components/CountryCodeSelect.vue";
 import infoIcon from "../assets/svg/info.svg";
 
 const s = useSurveyStore();
@@ -141,7 +155,78 @@ const validationOk = ref(false);
 
 // --- Phone length helpers ---
 const phoneDigits = computed(() => (s.phoneNumber || "").replace(/\D/g, ""));
-const isPhoneLongEnough = computed(() => phoneDigits.value.length >= 10);
+const isPhoneLongEnough = computed(() => phoneDigits.value.length >= 9);
+
+// Build a complete list of { code, en, ar } using REST Countries.
+// Includes all UN countries + most territories with correct dial codes.
+const countryCodes = ref([]);
+
+async function loadCountryCodes() {
+  try {
+    const res = await fetch(
+      "https://restcountries.com/v3.1/all?fields=name,translations,idd,cca2"
+    );
+    const all = await res.json();
+
+    // Fallback display name helpers (for rare missing translations)
+    const regionNamesEn = new Intl.DisplayNames(["en"], { type: "region" });
+    const regionNamesAr = new Intl.DisplayNames(["ar"], { type: "region" });
+
+    const list = [];
+    const byRegion = {};
+
+    for (const c of all) {
+      const root = c?.idd?.root;
+      const suffixes = c?.idd?.suffixes;
+      if (!root || !Array.isArray(suffixes) || suffixes.length === 0) continue;
+
+      const en =
+        c?.name?.common ?? regionNamesEn.of(c?.cca2) ?? c?.cca2 ?? "Unknown";
+      const ar =
+        c?.translations?.ara?.common ?? regionNamesAr.of(c?.cca2) ?? en; // fallback to EN if Arabic missing
+
+      for (const sfx of suffixes) {
+        // Some countries have multiple suffixes (e.g., UK territories, NANP)
+        list.push({ code: `${root}${sfx}`, en, ar });
+      }
+
+      // Keep a representative code per region (first suffix) for defaults
+      byRegion[c.cca2] = `${root}${suffixes[0]}`;
+    }
+
+    // Sort by English name then code for stable UX
+    list.sort(
+      (a, b) => a.en.localeCompare(b.en) || a.code.localeCompare(b.code)
+    );
+    countryCodes.value = list;
+
+    // Optional default: preselect UAE (+971) if nothing is set yet
+    if (!s.phoneCountryCode && byRegion["AE"]) {
+      s.phoneCountryCode = byRegion["AE"];
+    }
+  } catch (e) {
+    // Network fallback (GCC + common)
+    countryCodes.value = [
+      {
+        code: "+971",
+        en: "United Arab Emirates",
+        ar: "الإمارات العربية المتحدة",
+      },
+      { code: "+966", en: "Saudi Arabia", ar: "السعودية" },
+      { code: "+974", en: "Qatar", ar: "قطر" },
+      { code: "+973", en: "Bahrain", ar: "البحرين" },
+      { code: "+968", en: "Oman", ar: "عُمان" },
+      { code: "+965", en: "Kuwait", ar: "الكويت" },
+      { code: "+20", en: "Egypt", ar: "مصر" },
+      { code: "+44", en: "United Kingdom", ar: "المملكة المتحدة" },
+      { code: "+1", en: "United States/Canada", ar: "الولايات المتحدة/كندا" },
+      { code: "+91", en: "India", ar: "الهند" },
+    ];
+    if (!s.phoneCountryCode) s.phoneCountryCode = "+971";
+  }
+}
+
+onMounted(loadCountryCodes);
 
 // Button enabled only when required fields present, not validating, and phone length OK
 const canClickNext = computed(

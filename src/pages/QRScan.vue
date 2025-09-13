@@ -278,7 +278,7 @@ async function submit() {
       qrId: s.qrId,
       name: s.name,
       company: s.company || null,
-      phoneCountryCode: "+000",
+      phoneCountryCode: s.phoneCountryCode,
       phoneNumber: s.phoneNumber,
       interest: s.interest,
       thoughtsOnStc: s.interest === "None" ? s.thoughtsOnStc || null : null,
